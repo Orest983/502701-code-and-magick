@@ -1,7 +1,11 @@
 'use strict';
-
+var CLOUD_X = 100;
+var CLOUD_Y = 20;
 var CLOUD_WIDTH = 420;
 var CLOUD_HEIGHT = 270;
+var CLOUD_SHADOW_OFFSET = 10;
+var MESSAGE_X = 120;
+var MESSAGE_Y = 35;
 var GIST_START_POS_X = 140;
 var GIST_START_POS_Y = 250;
 var COLUMN_MAX_HEIGHT = 150;
@@ -9,9 +13,9 @@ var COLUMN_WIDTH = 40;
 var COLUMN_GAP = 50;
 var FONT_GAP = 10;
 var PLAYER_COLUMN_COLOR = 'rgba(255, 0, 0, 1)';
-var timesProportions = [];
 
 var getTimeHeightProportion = function (maxTime, maxHeight, arr) {
+  var timesProportions = [];
   for (var i = 0; i <= arr.length - 1; i++) {
     timesProportions[i] = Math.floor(maxHeight * arr[i] / maxTime);
   }
@@ -37,18 +41,24 @@ var renderText = function (ctx, opt) {
 var renderGist = function (ctx, names, times) {
   var randomBlue;
   var color;
-  var posX = GIST_START_POS_X;
   var maxTime = Math.max.apply(null, times);
-  timesProportions = getTimeHeightProportion(maxTime, COLUMN_MAX_HEIGHT, times);
+  var timesProportions = getTimeHeightProportion(
+      maxTime,
+      COLUMN_MAX_HEIGHT,
+      times
+  );
 
-  for (var i = 0; i < names.length; i++) {
+  for (
+    var i = 0, posX = GIST_START_POS_X;
+    i < names.length;
+    i++, posX += COLUMN_WIDTH + COLUMN_GAP
+  ) {
     // Set player column color
-    if (names[i] === 'Вы') {
-      color = PLAYER_COLUMN_COLOR;
-    } else {
-      randomBlue = getRandomMinMax(50, 255);
-      color = 'rgba(0, 0, ' + randomBlue + ', 1)';
-    }
+    randomBlue = getRandomMinMax(50, 255);
+    color =
+      names[i] === 'Вы'
+        ? PLAYER_COLUMN_COLOR
+        : 'rgba(0, 0, ' + randomBlue + ', 1)';
 
     // Render player gist column
     renderRect(ctx, {
@@ -72,26 +82,23 @@ var renderGist = function (ctx, names, times) {
       posX: posX,
       posY: GIST_START_POS_Y - timesProportions[i] - FONT_GAP * 2
     });
-
-    // Shift next column start position by X coord
-    posX += COLUMN_GAP + COLUMN_WIDTH;
   }
 };
 
-var renderStatistics = function (ctx, names, times) {
-  // Render cloud
+window.renderStatistics = function (ctx, names, times) {
+  // Render cloud shadow
   renderRect(ctx, {
-    posX: 110,
-    posY: 20,
+    posX: CLOUD_X + CLOUD_SHADOW_OFFSET,
+    posY: CLOUD_Y + CLOUD_SHADOW_OFFSET,
     width: CLOUD_WIDTH,
     height: CLOUD_HEIGHT,
     color: 'rgba(0, 0, 0, 0.7)'
   });
 
-  // Render cloud shadow
+  // Render cloud
   renderRect(ctx, {
-    posX: 100,
-    posY: 10,
+    posX: CLOUD_X,
+    posY: CLOUD_Y,
     width: CLOUD_WIDTH,
     height: CLOUD_HEIGHT,
     color: '#ffffff'
@@ -100,14 +107,14 @@ var renderStatistics = function (ctx, names, times) {
   // Render victory message
   renderText(ctx, {
     text: 'Ура вы победили!',
-    posX: 120,
-    posY: 35
+    posX: MESSAGE_X,
+    posY: MESSAGE_Y
   });
 
   renderText(ctx, {
     text: 'Список результатов:',
-    posX: 120,
-    posY: 55
+    posX: MESSAGE_X,
+    posY: MESSAGE_Y + FONT_GAP * 2
   });
 
   // Render gist
