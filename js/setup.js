@@ -1,4 +1,5 @@
 'use strict';
+var NUMBER_OF_WIZARDS = 4;
 
 var WIZARD_CARD_TEMPLATE = document
     .querySelector('#similar-wizard-template')
@@ -41,38 +42,25 @@ var getRandomMinMax = function (min, max) {
   return min + Math.floor(Math.random() * (max - min));
 };
 
-var getRandomColor = function (arrColors) {
-  var randomNumber = getRandomMinMax(0, arrColors.length);
-  return arrColors[randomNumber];
+var generateRandomFullName = function () {
+  var rand = getRandomMinMax(0, WIZARD_NAMES.length);
+  return WIZARD_NAMES[rand] + ' ' + WIZARD_LASTNAMES[rand];
 };
 
-var generateCharacter = function (opt) {
+var generateRandomCharacter = function () {
   var character = {
-    name: opt.name,
-    lastName: opt.lastName,
-    coatColor: getRandomColor(opt.coatColor),
-    eyesColor: getRandomColor(opt.eyesColor)
+    fullName: generateRandomFullName(),
+    coatColor: COAT_COLORS[getRandomMinMax(0, COAT_COLORS.length)],
+    eyesColor: EYES_COLORS[getRandomMinMax(0, EYES_COLORS.length)]
   };
 
   return character;
 };
 
-var generateCharactersList = function (
-    names,
-    lastNames,
-    coatColors,
-    eyesColors
-) {
+var generateCharactersList = function () {
   var characters = [];
-  var character;
   for (var i = 0; i < WIZARD_NAMES.length; i++) {
-    character = generateCharacter({
-      name: names[i],
-      lastName: lastNames[i],
-      coatColor: coatColors,
-      eyesColor: eyesColors
-    });
-    characters[i] = character;
+    characters[i] = generateRandomCharacter();
   }
   return characters;
 };
@@ -80,16 +68,16 @@ var generateCharactersList = function (
 var createWizardElement = function (item) {
   var wizardElement = WIZARD_CARD_TEMPLATE.cloneNode(true);
   wizardElement.querySelector('.setup-similar-label').textContent =
-    item.name + ' ' + item.lastName;
+    item.fullName;
   wizardElement.querySelector('.wizard-coat').style.fill = item.coatColor;
   wizardElement.querySelector('.wizard-eyes').style.fill = item.eyesColor;
 
   return wizardElement;
 };
 
-var createWizardsElementsList = function (charList) {
+var createWizardsElementsList = function (charList, numOfChars) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < charList.length; i++) {
+  for (var i = 0; i <= numOfChars; i++) {
     fragment.appendChild(createWizardElement(charList[i]));
   }
   return fragment;
@@ -99,13 +87,10 @@ var renderSimilarWizards = function () {
   document.querySelector('.setup').classList.remove('hidden');
   var setupSimilar = document.querySelector('.setup-similar');
   var setupSimilarList = document.querySelector('.setup-similar-list');
-  var charList = generateCharactersList(
-      WIZARD_NAMES,
-      WIZARD_LASTNAMES,
-      COAT_COLORS,
-      EYES_COLORS
+  var charList = generateCharactersList();
+  setupSimilarList.appendChild(
+      createWizardsElementsList(charList, NUMBER_OF_WIZARDS)
   );
-  setupSimilarList.appendChild(createWizardsElementsList(charList));
   setupSimilar.classList.remove('hidden');
 };
 
