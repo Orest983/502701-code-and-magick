@@ -59,7 +59,7 @@ var generateRandomCharacter = function () {
 
 var generateCharactersList = function () {
   var characters = [];
-  for (var i = 0; i < WIZARD_NAMES.length; i++) {
+  for (var i = 0; i < NUMBER_OF_WIZARDS; i++) {
     characters[i] = generateRandomCharacter();
   }
   return characters;
@@ -75,9 +75,9 @@ var createWizardElement = function (item) {
   return wizardElement;
 };
 
-var createWizardsElementsList = function (charList, numOfChars) {
+var createWizardsElementsList = function (charList) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i <= numOfChars; i++) {
+  for (var i = 0; i < NUMBER_OF_WIZARDS; i++) {
     fragment.appendChild(createWizardElement(charList[i]));
   }
   return fragment;
@@ -88,9 +88,7 @@ var renderSimilarWizards = function () {
   var setupSimilar = document.querySelector('.setup-similar');
   var setupSimilarList = document.querySelector('.setup-similar-list');
   var charList = generateCharactersList();
-  setupSimilarList.appendChild(
-      createWizardsElementsList(charList, NUMBER_OF_WIZARDS)
-  );
+  setupSimilarList.appendChild(createWizardsElementsList(charList));
   setupSimilar.classList.remove('hidden');
 };
 
