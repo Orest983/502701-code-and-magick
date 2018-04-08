@@ -1,7 +1,7 @@
 # Учебный проект «Код и Магия» [![Build status][travis-image]][travis-url]
 
 * Студент: [Орест Миронов](https://up.htmlacademy.ru/javascript/13/user/502701).
-* Наставник: `Неизвестно`.
+* Наставник: [Дмитрий Маров](https://htmlacademy.ru/profile/id683671).
 
 ---
 
