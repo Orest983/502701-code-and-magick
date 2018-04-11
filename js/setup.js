@@ -36,7 +36,29 @@ var COAT_COLORS = [
   'rgb(0, 0, 0)'
 ];
 
+var WIZARD_EYES_COLOR = ['black', 'red', 'blue', 'yellow', 'green'];
+var WIZARD_FIREBALL_COLOR = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
+
+var ENTER_KEY_CODE = 13;
+var ESC_KEY_CODE = 27;
+
 var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
+
+var SETUP_POPUP = document.querySelector('.setup');
+var SETUP_OPEN_BTN = document.querySelector('.setup-open');
+var SETUP_CLOSE_BTN = document.querySelector('.setup-close');
+var SETUP_USER_NAME = document.querySelector('.setup-user-name');
+var SETUP_WIZARD_FORM = document.querySelector('.setup-wizard-form');
+var SETUP_SUBMIT_BTN = document.querySelector('.setup-submit');
+var SETUP_WIZARD = document.querySelector('.setup-wizard');
+var WIZARD_EYES = document.querySelector('.wizard-eyes');
+var SETUP_FIREBALL_WRAP = document.querySelector('.setup-fireball-wrap');
 
 var getRandomMinMax = function (min, max) {
   return min + Math.floor(Math.random() * (max - min));
@@ -84,12 +106,91 @@ var createWizardsElementsList = function (charList) {
 };
 
 var renderSimilarWizards = function () {
-  document.querySelector('.setup').classList.remove('hidden');
   var setupSimilar = document.querySelector('.setup-similar');
   var setupSimilarList = document.querySelector('.setup-similar-list');
   var charList = generateCharactersList();
   setupSimilarList.appendChild(createWizardsElementsList(charList));
   setupSimilar.classList.remove('hidden');
 };
+
+var checkIsFocused = function (elem) {
+  var activeElement = document.activeElement;
+  return activeElement === elem ? true : false;
+};
+var openPopup = function () {
+  SETUP_POPUP.classList.remove('hidden');
+  document.addEventListener('keydown', documentKeydownHandler);
+};
+var closePopup = function () {
+  SETUP_POPUP.classList.add('hidden');
+  document.removeEventListener('keydown', documentKeydownHandler);
+};
+var formSubmit = function () {
+  if (SETUP_WIZARD_FORM.checkValidity()) {
+    SETUP_WIZARD_FORM.submit();
+  }
+};
+var getRandomColor = function (arr) {
+  var rand = getRandomMinMax(0, arr.length);
+  return arr[rand];
+};
+
+// event handlers
+var documentKeydownHandler = function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE && !checkIsFocused(SETUP_USER_NAME)) {
+    closePopup();
+  }
+};
+var setupOpenBtnClickHandler = function () {
+  openPopup();
+};
+var setupOpenBtnKeydownHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEY_CODE) {
+    openPopup();
+  }
+};
+var setupCloseBtnClickHandler = function () {
+  closePopup();
+};
+var setupCloseBtnKeydownHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEY_CODE) {
+    closePopup();
+  }
+};
+var setupSubmitBtnClickHandler = function () {
+  formSubmit();
+};
+var setupSubmitBtnKeydownHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEY_CODE) {
+    formSubmit();
+  }
+};
+var setupUserNameInvalidHandler = function () {
+  if (SETUP_USER_NAME.validity.tooShort) {
+    SETUP_USER_NAME.setCustomValidity(
+        'Имя должно состоять минимум из 2-х символов'
+    );
+  } else if (SETUP_USER_NAME.validity.tooLong) {
+    SETUP_USER_NAME.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (SETUP_USER_NAME.validity.valueMissing) {
+    SETUP_USER_NAME.setCustomValidity('Обязательное поле');
+  }
+};
+var setupWizardClickHandler = function () {
+  WIZARD_EYES.style.fill = getRandomColor(WIZARD_EYES_COLOR);
+};
+var setupFireballWrapClickHandler = function () {
+  SETUP_FIREBALL_WRAP.style.background = getRandomColor(WIZARD_FIREBALL_COLOR);
+};
+
+SETUP_OPEN_BTN.addEventListener('click', setupOpenBtnClickHandler);
+SETUP_OPEN_BTN.addEventListener('keydown', setupOpenBtnKeydownHandler);
+SETUP_CLOSE_BTN.addEventListener('click', setupCloseBtnClickHandler);
+SETUP_CLOSE_BTN.addEventListener('keydown', setupCloseBtnKeydownHandler);
+SETUP_SUBMIT_BTN.addEventListener('click', setupSubmitBtnClickHandler);
+SETUP_SUBMIT_BTN.addEventListener('keydown', setupSubmitBtnKeydownHandler);
+SETUP_USER_NAME.addEventListener('invalid', setupUserNameInvalidHandler);
+SETUP_WIZARD.addEventListener('click', setupWizardClickHandler);
+SETUP_FIREBALL_WRAP.addEventListener('click', setupFireballWrapClickHandler);
 
 renderSimilarWizards();
