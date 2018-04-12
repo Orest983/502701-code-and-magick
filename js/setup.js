@@ -68,13 +68,6 @@ var FIREBALL_COLOR_INPUT = SETUP_WIZARD_FORM.querySelector(
     'input[name="fireball-color"]'
 );
 
-console.log('SETUP_OPEN_BTN');
-console.log(SETUP_OPEN_BTN);
-console.log('SETUP_WIZARD_FORM');
-console.log(SETUP_WIZARD_FORM);
-console.log('SETUP_CLOSE_BTN');
-console.log(SETUP_CLOSE_BTN);
-
 var getRandomMinMax = function (min, max) {
   return min + Math.floor(Math.random() * (max - min));
 };
@@ -141,7 +134,6 @@ var closePopup = function () {
   document.removeEventListener('keydown', documentKeydownHandler);
 };
 var formSubmit = function () {
-  SETUP_USER_NAME.removeEventListener('invalid', setupUserNameInvalidHandler);
   if (SETUP_WIZARD_FORM.checkValidity()) {
     SETUP_WIZARD_FORM.submit();
   }
@@ -190,6 +182,8 @@ var setupUserNameInvalidHandler = function () {
     SETUP_USER_NAME.setCustomValidity('Имя не должно превышать 25-ти символов');
   } else if (SETUP_USER_NAME.validity.valueMissing) {
     SETUP_USER_NAME.setCustomValidity('Обязательное поле');
+  } else {
+    SETUP_USER_NAME.setCustomValidity('');
   }
 };
 var wizardEyesClickHandler = function () {
